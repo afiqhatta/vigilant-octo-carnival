@@ -1,0 +1,38 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# k armed-bandit with stationary problem
+
+k = 10
+Q, N = np.zeros(k), np.zeros(k)
+e = 0
+l = 1000 # steps
+r = 200 # runs
+log = np.zeros((l, r))
+
+# run test
+for j in range(r):
+    means = np.random.normal(0, 1, 10)
+    for i in range(l):
+        if np.random.binomial(1, e) == 1:
+            A = np.random.randint(0, 10)
+        else:
+            A = np.argmax(Q)
+        R = np.random.normal(means[A], 0.1)
+        N[A] = N[A] + 1
+        Q[A] = Q[A] + (1/N[A])*(R-Q[A])
+        log[i][j] = R
+
+a = pd.DataFrame(log)
+av = a.mean(1) # av reward at each step of run
+
+av.plot()
+plt.show()
+print(av)
+print(means)
+
+
+
+
+
